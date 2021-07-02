@@ -70,6 +70,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func seedTasks() {
 
         // 1.1 Persist an onboarding task
+        
+        let onboardSchedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: "Task Due!", duration: OCKScheduleElement.Duration, targetValues: .allDay)
+        
+        
+        var onboardTask = OCKTask(id: TaskIDs.onboarding, title: "Onboard", carePlanUUID: nil, schedule: onboardSchedule)
+        
+        onboardTask.instructions = "You'll need to agree to some term and conditions before we get started"
+        onboardTask.impactsAdherence = false
+        
+        storeManager.store.addAnyTasks([onboardTask], callbackQueue: .main, completion: {
+            result in
+            switch result {
+            case let .success(tasks):
+                Logger.store.info("Seeded \(tasks.count) tasks")
+                
+            case let .failure(error):
+                Logger.store.warning("Failed to seed tasks: \(error as NSError)")
+            }
+        })
+        
     }
 }
 

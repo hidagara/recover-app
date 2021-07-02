@@ -37,4 +37,8 @@ struct Surveys {
     // MARK: Onboarding
 
     // 1.4 Construct an ORKTask for onboarding
+    
+    static func onboardingSurvey() -> ORKTask {
+        
+    }
 }

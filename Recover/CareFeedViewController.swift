@@ -43,11 +43,33 @@ final class CareFeedViewController: OCKDailyPageViewController,
         for date: Date) {
 
         // 1.3 Check if onboarding is complete.
+        checkIfOnboardingComplete { isOnboarded in
+            guard isOnboarded else { return }
+            
+        }
 
         // 1.5 If isn't, show an onboarding card.
     }
 
     // 1.2 Define a method that checks if onboarding is complete
+    
+    private func checkIfOnboardingComplete(_ completion: @escaping (Bool) -> Void) {
+        var query = OCKOutcomeQuery()
+        query.taskIDs = [TaskIDS.onboarding]
+        
+        storeManager.store.fetchAnyOutcomes(
+            query: query,
+            callbackQueue: .main) {
+            result in
+            switch result {
+            case let .success(outcomes):
+                completion(!outcomes.isEmpty)
+            case let .failure:
+                Logger.feed.error("Failed to fetch onboarding outcomes")
+                completion(false)
+            }
+        }
+    }
 
     // 1.6 Refresh the content when onboarding completes
 }
